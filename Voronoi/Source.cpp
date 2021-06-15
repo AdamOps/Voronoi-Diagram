@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/System.hpp>
 #include <vector>
 #include <iostream>
 
@@ -15,6 +16,7 @@ int main(){
     siteVector.reserve(settings.numSites);
 
     sweepLine line(&settings);
+    beachLine beach(&siteVector, &settings);
 
     sf::RenderWindow window(sf::VideoMode(settings.windowWidth, settings.windowHeight), "Voronoi Diagrams");
     window.setFramerateLimit(settings.frameRate);
@@ -23,8 +25,7 @@ int main(){
 
     while (window.isOpen()){
         handleEvents(&window, &settings, &siteVector);
-
-        drawAll(&window, &settings, &siteVector, &line);
+        drawAll(&window, &settings, &siteVector, &line, &beach);
     }
 
     return 0;

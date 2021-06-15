@@ -9,24 +9,20 @@
 
 sweepLine::sweepLine() {
 	y = 0;
-	x1 = 0;
-	x2 = 0;
 	sweepLineShape.setScale(0, 0);
 	std::cout << "Failed to create sweepline" << std::endl;
 }
 
 sweepLine::sweepLine(parameters* settings) {
 	y = 0.f;
-	x1 = 0.f;
-	x2 = settings->windowWidth;
-	sweepLineShape.setSize(sf::Vector2f(x2, settings->sweepLineThickness));
+	sweepLineShape.setSize(sf::Vector2f(settings->windowWidth, settings->sweepLineThickness));
 	sweepLineShape.setFillColor(sf::Color::White);
-	sweepLineShape.setPosition(x1, y);
+	sweepLineShape.setPosition(0.f, y);
 };
 
 void sweepLine::updatePos(sf::RenderWindow* window) { 
 	y = static_cast<float>(sf::Mouse::getPosition(*window).y);
-	sweepLineShape.setPosition(x1, y);
+	sweepLineShape.setPosition(0.f, y);
 }
 
 void sweepLine::setThickness(float thickness) {
@@ -44,16 +40,17 @@ site::site(parameters* settings, int iterator) {
 	x = rand() % settings->windowWidth;
 	y = rand() % settings->windowHeight;
 	siteID = iterator;
+	visibleToBeach = false;
 
 	siteShape.setRadius(settings->siteRadius);
 	siteShape.setFillColor(sf::Color::Blue);
-	siteShape.setOrigin(siteShape.getOrigin().x + siteShape.getRadius(), siteShape.getOrigin().y + siteShape.getRadius());
+	siteShape.setOrigin(static_cast<float>(siteShape.getOrigin().x + siteShape.getRadius()), static_cast<float>(siteShape.getOrigin().y + siteShape.getRadius()));
 	siteShape.setPosition(static_cast<float>(x), static_cast<float>(y));
 
 	// Define arc corresponding to the site. The linestrip has as many segments as there are pixels in the window width, to maximise the resolution.
 	// Might want to reduce this a bit (for performance), since this won't actually be used for any kind of calculations, but is only there to display the arc.
 	siteArc.setPrimitiveType(sf::LineStrip);
-	// siteArc.resize(static_cast<int>(settings->windowWidth));
+	siteArc.resize(static_cast<int>(settings->windowWidth / settings->arcResolution));
 }
 
 void site::updateArc(parameters* settings, sweepLine* line) {
@@ -61,11 +58,43 @@ void site::updateArc(parameters* settings, sweepLine* line) {
 	siteArc.clear();
 
 	sf::Vertex vertex;
-	for (int i = 0; i < settings->windowWidth; i++) {
-		// This calculates the y value of the parabola for every x coordinate (with a resolution of 1 pixel), based on the current height of the sweep line.
+	for (int i = 0; i < settings->windowWidth; i += settings->arcResolution) {
+		// This calculates the y value of the parabola for every x coordinate (with a resolution of 'arcResolution' pixels), based on the current height of the sweep line.
 		float arcY = (1 / (2 * (y - line->getY()))) * (i - x) * (i - x) + (y + line->getY()) / 2;
 		vertex.position = sf::Vector2f(i, arcY);
 		siteArc.append(vertex);
 	}
 	
+}
+
+beachLine::beachLine() {
+	beachLineArray.clear();
+	sf::Vertex vertex = sf::Vector2f(50, 50);
+	beachLineArray.append(vertex);
+	std::cout << "Failed to create beachline" << std::endl;
+}
+
+
+beachLine::beachLine(std::vector<site>* siteVector, parameters* settings) {
+	beachLineArray.setPrimitiveType(sf::LineStrip);
+	beachLineArray.resize(static_cast<int>(settings->windowWidth / settings->arcResolution));
+
+	updateBeachLine(siteVector, settings);
+}
+
+void beachLine::updateBeachLine(std::vector<site>* siteVector, parameters* settings) {
+	beachLineArray.clear();
+
+	float maxY = 0.f;
+	for (int i = 0; i < (settings->windowWidth / settings->arcResolution); i += settings->arcResolution) {
+		for (int j = 0; j < siteVector->size(); j++) {
+			if (siteVector->at(j).getVisibility()) {
+				if (siteVector->at(j).siteArc[i].position.y > maxY) {
+					maxY = siteVector->at(j).siteArc[i].position.y;
+				}
+			}
+		}
+		beachLineArray.append(sf::Vertex(sf::Vector2f(i, maxY), sf::Color::Red));
+		maxY = 0.f;
+	}
 }
