@@ -33,6 +33,7 @@ site::site() {
 	x = 0;
 	y = 0;
 	siteID = 0;
+	visibleToBeach = false;
 	std::cout << "Failed to create sites" << std::endl;
 }
 
@@ -57,14 +58,11 @@ void site::updateArc(parameters* settings, sweepLine* line) {
 	// Reset the whole arc by deleting all points inside.
 	siteArc.clear();
 
-	sf::Vertex vertex;
 	for (int i = 0; i < settings->windowWidth; i += settings->arcResolution) {
 		// This calculates the y value of the parabola for every x coordinate (with a resolution of 'arcResolution' pixels), based on the current height of the sweep line.
 		float arcY = (1 / (2 * (y - line->getY()))) * (i - x) * (i - x) + (y + line->getY()) / 2;
-		vertex.position = sf::Vector2f(i, arcY);
-		siteArc.append(vertex);
-	}
-	
+		siteArc.append(sf::Vertex(sf::Vector2f(static_cast<float>(i), arcY), sf::Color::White));
+	}	
 }
 
 beachLine::beachLine() {
@@ -94,7 +92,11 @@ void beachLine::updateBeachLine(std::vector<site>* siteVector, parameters* setti
 				}
 			}
 		}
-		beachLineArray.append(sf::Vertex(sf::Vector2f(i, maxY), sf::Color::Red));
+		beachLineArray.append(sf::Vertex(sf::Vector2f(static_cast<float>(i * settings->arcResolution), maxY), sf::Color::Red));
 		maxY = 0.f;
 	}
+}
+
+halfEdge::halfEdge() {
+
 }

@@ -12,7 +12,9 @@ void drawAll(sf::RenderWindow* window, parameters* settings, std::vector<site>* 
 		if (siteVector->at(i).getY() < line->getY()) {
 			siteVector->at(i).useArc();
 			siteVector->at(i).updateArc(settings, line);
-			window->draw(siteVector->at(i).siteArc);
+			if (settings->drawArcs) {
+				window->draw(siteVector->at(i).siteArc);
+			}
 		}
 		else {
 			siteVector->at(i).skipArc();
@@ -21,7 +23,9 @@ void drawAll(sf::RenderWindow* window, parameters* settings, std::vector<site>* 
 
 	beach->updateBeachLine(siteVector, settings);
 
-	window->draw(beach->beachLineArray);
+	if (settings->drawBeach) {
+		window->draw(beach->beachLineArray);
+	}
 
 	// The sweeping line is updated based on the mouse position
 	line->updatePos(window);

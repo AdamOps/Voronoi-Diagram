@@ -17,26 +17,30 @@ void handleEvents(sf::RenderWindow* window, parameters* settings, std::vector<si
             initAll(settings, siteVector);
         }
 
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up && settings->siteRadius < 10.f) {
-            for (int i = 0; i < siteVector->size(); i++) {
-                siteVector->at(i).siteShape.setRadius(siteVector->at(i).siteShape.getRadius() + 1.f);
-                siteVector->at(i).siteShape.setOrigin(siteVector->at(i).siteShape.getOrigin().x + 1.f, siteVector->at(i).siteShape.getOrigin().y + 1.f);
-            }
-            settings->siteRadius += 1.f;
-            std::cout << "New radius: " << settings->siteRadius << std::endl;
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up) {
+            settings->numSites++;
+            siteVector->push_back(site(settings, settings->numSites - 1));
         }
 
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down && settings->siteRadius > 1.f) {
-            for (int i = 0; i < siteVector->size(); i++) {
-                siteVector->at(i).siteShape.setRadius(siteVector->at(i).siteShape.getRadius() - 1.f);
-                siteVector->at(i).siteShape.setOrigin(siteVector->at(i).siteShape.getOrigin().x - 1.f, siteVector->at(i).siteShape.getOrigin().y - 1.f);
-            }
-            settings->siteRadius -= 1.f;
-            std::cout << "New radius: " << settings->siteRadius << std::endl;
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down && settings->numSites > 2) {
+            settings->numSites--;
+            siteVector->pop_back();
         }
 
-        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-            std::cout << "mouseX = " << sf::Mouse::getPosition().x << ", mouseY = " << sf::Mouse::getPosition().y << std::endl;
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Left && settings->arcResolution > 1.f) {
+            settings->arcResolution--;
+        }
+
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Right && settings->arcResolution < 10.f) {
+            settings->arcResolution++;
+        }
+
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::A) {
+            settings->drawArcs = (1 - settings->drawArcs);
+        }
+
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::B) {
+            settings->drawBeach = (1 - settings->drawBeach);
         }
     }
 }

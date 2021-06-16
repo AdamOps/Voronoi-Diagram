@@ -52,21 +52,6 @@ private:
 	bool visibleToBeach;
 };
 
-class arcIntersect {
-public:
-	// Public features
-	sf::CircleShape arcIntersectShape;
-
-	// Public methods
-	int getX() { return this->x; }
-	int getY() { return this->y; }
-	void setX(float x_) { this->x = x_; }
-	void setY(float y_) { this->y = y_; }
-
-private:
-	float x, y;
-};
-
 class beachLine {
 public:
 	// Public features
@@ -81,5 +66,12 @@ public:
 
 	// Public methods
 	void updateBeachLine(std::vector<site>* siteVector, parameters* settings);
+private:
+};
+
+class halfEdge {
+public:
+	halfEdge();
+
 private:
 };

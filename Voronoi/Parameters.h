@@ -3,8 +3,9 @@
 struct parameters{
 	const int windowHeight = 1000,
 		windowWidth = 1600;
+	const bool keyRepeat = true;
 	const int frameRate = 60;
-	const int numSites = 8;
+	int numSites = 10;
 
 	// Visual parameters. 
 	//		Sweepline is a horizontal straight line
@@ -13,6 +14,8 @@ struct parameters{
 	const float sweepLineThickness = 1;
 	float siteRadius = 2.f;
 	int arcResolution = 1;
+	bool drawArcs = true;
+	bool drawBeach = true;
 
 	parameters() {
 	}
