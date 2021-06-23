@@ -29,8 +29,8 @@ public:
 	sf::CircleShape siteShape;
 
 	// Constructors
-	site();
-	site(parameters* settings, int iterator);
+	site() : x(0), y(0) {};
+	site(parameters* settings);
 
 	// Public methods
 	int getX() { return this->x; }
@@ -42,12 +42,14 @@ public:
 
 private:
 	int x, y;
-	int siteID;
 };
 
 class circle {
 public:
 	// Public features
+
+	// Constructors
+	circle() : x(0), y(0) {};
 	circle(float x_, float y_) {
 		x = x_;
 		y = y_;

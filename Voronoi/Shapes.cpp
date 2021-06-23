@@ -21,10 +21,8 @@ void sweepLine::updatePos(sf::RenderWindow* window) {
 }
 
 
-site::site(parameters* settings, int iterator) {
+site::site(parameters* settings) {
 	x = rand() % settings->windowWidth;
 	y = rand() % settings->windowHeight;
-	siteID = iterator;
-
 	siteShape.setRadius(settings->siteRadius);
 }

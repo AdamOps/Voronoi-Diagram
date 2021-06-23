@@ -6,7 +6,6 @@
 
 #include "EventHandling.h"
 #include "Init.h"
-#include "Draw.h"
 #include "Parameters.h"
 #include "Shapes.h"
 #include "BinaryTree.h"
@@ -50,7 +49,6 @@ int main(){
         for (int i = 0; i < siteVector.size(); i++) {
             window.draw(siteVector.at(i).siteShape);
         }
-
     }
 
     return 0;
