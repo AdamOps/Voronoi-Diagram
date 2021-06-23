@@ -6,7 +6,6 @@
 class sweepLine{
 public:
 	// Public features
-	sf::RectangleShape sweepLineShape;
 
 	// Constructors
 	sweepLine();
@@ -18,7 +17,6 @@ public:
 	// Public methods
 	float getY() { return y; }
 
-	void setThickness(float thickness);
 	void updatePos(sf::RenderWindow* window);
 
 private:
@@ -29,7 +27,6 @@ class site {
 public:
 	// Public features
 	sf::CircleShape siteShape;
-	sf::VertexArray siteArc;
 
 	// Constructors
 	site();
@@ -38,40 +35,32 @@ public:
 	// Public methods
 	int getX() { return this->x; }
 	int getY() { return this->y; }
-	bool getVisibility() { return visibleToBeach; }
 	void setX(int x_) { this->x = x_; }
 	void setY(int y_) { this->y = y_; }
 
-	void updateArc(parameters* settings, sweepLine* line);
-	void useArc() { this->visibleToBeach = true; }
-	void skipArc() { this->visibleToBeach = false; }
+	bool isCircle() { return false; }
 
 private:
 	int x, y;
 	int siteID;
-	bool visibleToBeach;
 };
 
-class beachLine {
+class circle {
 public:
 	// Public features
-	sf::VertexArray beachLineArray;
+	circle(float x_, float y_) {
+		x = x_;
+		y = y_;
+	}
 
-	// Constructors
-	beachLine();
-	beachLine(std::vector<site>* siteVector, parameters* settings);
+	//public Methods
+	int getX() { return x; }
+	int getY() { return y; }
+	void setX(int x_) { x = x_; }
+	void setY(int y_) { y = y_; }
 
-	// Avoid duplication
-	beachLine(const beachLine&) = delete;
-
-	// Public methods
-	void updateBeachLine(std::vector<site>* siteVector, parameters* settings);
-private:
-};
-
-class halfEdge {
-public:
-	halfEdge();
+	bool isCircle() { return true; }
 
 private:
+	int x, y;
 };
