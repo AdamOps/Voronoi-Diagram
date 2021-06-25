@@ -12,9 +12,9 @@ struct binaryTreeNode {
 
 	binaryTreeNode()
 	: value(0.f), leftChildNode(nullptr), rightChildNode(nullptr), /*parentNode(nullptr),*/ treeLevel(0) {
-		nodeShape.setRadius(10.f);
-		nodeShape.setFillColor(sf::Color::White);
-		nodeShape.setOrigin(nodeShape.getOrigin().x + nodeShape.getRadius(), nodeShape.getOrigin().x + nodeShape.getRadius());
+		this->nodeShape.setRadius(10.f);
+		this->nodeShape.setFillColor(sf::Color::White);
+		this->nodeShape.setOrigin(nodeShape.getOrigin().x + nodeShape.getRadius(), nodeShape.getOrigin().x + nodeShape.getRadius());
 	}
 };
 

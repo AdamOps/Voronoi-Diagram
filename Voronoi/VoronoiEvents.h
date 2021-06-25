@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <iostream>
+
 #include "Shapes.h"
 
 class voronoiEvent {
@@ -15,13 +17,13 @@ public:
 		circleEvent = newEvent->isCircle();
 	}
 
-	int getIndex() { return index; }
-	void setIndex(int index_) { index = index_; }
+	float getY() { return this->y; }
+	bool isCircle() { return this->circleEvent; }
+	void printEvent() { std::cout << "y = " << this->y << std::endl; }
 
 private:	
 	float y;
 	bool circleEvent;
-	int index;
 };
 
 
@@ -33,6 +35,7 @@ public:
 
 	void push(voronoiEvent& newEvent);
 	voronoiEvent pop();
+	voronoiEvent peek();
 	void erase(int index);
 	void heapifyUp(int index);
 	void heapifyDown(int index);
@@ -42,7 +45,9 @@ public:
 	int getRightChild(int index) { return (2 * index + 2); }
 
 	int getSize() { return eventQueue.size(); }
-	bool isEmpty() { return getSize() == 0; }
+	bool isEmpty() { return eventQueue.empty(); }
+
+	void printQueue();
 
 private:
 	std::vector<voronoiEvent> eventQueue;

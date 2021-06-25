@@ -3,26 +3,6 @@
 #include <SFML/Window.hpp>
 #include "Parameters.h"
 
-class sweepLine{
-public:
-	// Public features
-
-	// Constructors
-	sweepLine();
-	sweepLine(parameters* settings);
-
-	// Avoid duplication
-	sweepLine(const sweepLine&) = delete;
-
-	// Public methods
-	float getY() { return y; }
-
-	void updatePos(sf::RenderWindow* window);
-
-private:
-	float y;
-};
-
 class site {
 public:
 	// Public features

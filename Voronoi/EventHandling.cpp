@@ -19,7 +19,7 @@ void handleEvents(sf::RenderWindow* window, parameters* settings, std::vector<si
 
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up) {
             settings->numSites++;
-            siteVector->push_back(site(settings, settings->numSites - 1));
+            siteVector->push_back(site(settings));
         }
 
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down && settings->numSites > 2) {

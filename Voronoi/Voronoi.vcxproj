@@ -150,18 +150,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BinaryTree.cpp" />
     <ClCompile Include="EventHandling.cpp" />
+    <ClCompile Include="Fortune.cpp" />
+    <ClCompile Include="RedBlackTree.cpp" />
     <ClCompile Include="VoronoiEvents.cpp" />
     <ClCompile Include="Init.cpp" />
     <ClCompile Include="Shapes.cpp" />
     <ClCompile Include="Shapes.h" />
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BinaryTree.h" />
     <ClInclude Include="EventHandling.h" />
+    <ClInclude Include="Fortune.h" />
+    <ClInclude Include="RedBlackTree.h" />
     <ClInclude Include="VoronoiEvents.h" />
     <ClInclude Include="Init.h" />
     <ClInclude Include="Parameters.h" />

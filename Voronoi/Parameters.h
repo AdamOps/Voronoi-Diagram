@@ -7,9 +7,6 @@ struct parameters{
 	const int frameRate = 60;
 	int numSites = 10;
 
-	const int treeWindowHeight = 500,
-		treeWindowWidth = 600;
-
 	// Visual parameters. 
 	//		Sweepline is a horizontal straight line
 	//		Sites are displayed as circles
