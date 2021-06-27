@@ -39,33 +39,34 @@ void voronoiEventQueue::heapifyUp(int index) {
 }
 
 void voronoiEventQueue::heapifyDown(int index) {
-	int leftIndex = getLeftChild(index);
-	int rightIndex = getRightChild(index);
+	if (getSize() != 0) {
+		int leftIndex = getLeftChild(index);
+		int rightIndex = getRightChild(index);
 
-	int smallestIndex = index;
-	float currentY = eventQueue.at(index).getY();
-	float smallestY = currentY;
+		int smallestIndex = index;
+		float currentY = eventQueue.at(index).getY();
+		float smallestY = currentY;
 
-	if (leftIndex < getSize()) {
-		float leftY = eventQueue.at(leftIndex).getY();
-		if (leftY < smallestY) {
-			smallestY = leftY;
-			smallestIndex = leftIndex;
+		if (leftIndex < getSize()) {
+			float leftY = eventQueue.at(leftIndex).getY();
+			if (leftY < smallestY) {
+				smallestY = leftY;
+				smallestIndex = leftIndex;
+			}
+		}
+		if (rightIndex < getSize()) {
+			float rightY = eventQueue.at(rightIndex).getY();
+			if (rightY < smallestY) {
+				smallestY = rightY;
+				smallestIndex = rightIndex;
+			}
+		}
+
+		if (smallestIndex != index) {
+			std::swap(eventQueue.at(index), eventQueue.at(smallestIndex));
+			heapifyDown(smallestIndex);
 		}
 	}
-	if (rightIndex < getSize()) {
-		float rightY = eventQueue.at(rightIndex).getY();
-		if (rightY < smallestY) {
-			smallestY = rightY;
-			smallestIndex = rightIndex;
-		}
-	}
-
-	if (smallestIndex != index) {
-		std::swap(eventQueue.at(index), eventQueue.at(smallestIndex));
-		heapifyDown(smallestIndex);
-	}
-
 }
 
 void voronoiEventQueue::printQueue() {

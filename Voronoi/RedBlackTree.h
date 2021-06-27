@@ -7,9 +7,7 @@
 enum class nodeColor { black, red };
 
 // Useful to keep track of whether a node is the left or the right child of its parent.
-// 0 means left child
-// 1 means right child
-enum class nodeDirection { left, right };
+enum class nodeDirection { left, right, rootDir };
 
 
 struct RBNode {
@@ -34,7 +32,7 @@ struct RBNode {
 	// The position of the site. Should probably include some other useful variables in here (e.g. range of x coordinates covered by the arc)
 	float siteX;
 	float siteY;
-	
+
 	// The node may have a circle event attached to it
 	voronoiEvent* circleEvent;
 
@@ -42,17 +40,34 @@ struct RBNode {
 	bool tuple;
 	float breakpointX;
 
+	// Constructor
+	RBNode() : parent(nullptr),
+		leftChild(nullptr),
+		rightChild(nullptr),
+		leftNeighbour(nullptr),
+		rightNeighbour(nullptr),
+		direction(nodeDirection::rootDir),
+		color(nodeColor::red),
+		circleEvent(nullptr),
+		tuple(false),
+		breakpointX(NULL),
+		siteX(NULL),
+		siteY(NULL) {
+	}
 };
 
 struct RBTree {
 	RBNode* root;
+	int nodeCount;
 
 	// Tree should be empty by default
-	RBTree() : root(nullptr) {
-
+	RBTree() : root(nullptr), nodeCount(0) {
 	}
-	void RBTreeInsert(float siteX_, float siteY_);
+
+	void insert(float siteX_, float siteY_);
+	void deleteNode(RBNode* node);
 	void fixInsertion(RBNode* node);
+	void updateDirection(RBNode* node);
 
 	RBNode* getParent(RBNode* node);
 	RBNode* getGrandParent(RBNode* node);
@@ -60,6 +75,8 @@ struct RBTree {
 	RBNode* getUncle(RBNode* node);
 	RBNode* getNearestNephew(RBNode* node);
 	RBNode* getFurtherNephew(RBNode* node);
-	RBNode* rotateLeft(RBNode* node);
-	RBNode* rotateRight(RBNode* node);
+	void rotateLeft(RBNode* node);
+	void rotateRight(RBNode* node);
+
+	void printTree();
 };

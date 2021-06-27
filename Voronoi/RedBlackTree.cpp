@@ -95,7 +95,11 @@ RBNode* RBTree::getFurtherNephew(RBNode* node) {
 	return nullptr;
 }
 
-void RBTree::RBTreeInsert(float siteX_, float siteY_) {
+void RBTree::insert(float siteX_, float siteY_) {
+	// Since a node has been inserted, the number of nodes has gone up.
+	this->nodeCount++;
+
+	// Set default node properties
 	RBNode* newNode = new RBNode;
 	newNode->parent = nullptr;
 	newNode->siteX = siteX_;
@@ -135,9 +139,11 @@ void RBTree::RBTreeInsert(float siteX_, float siteY_) {
 	// If a non-empty parent was found, then we want to pass on whether the new node has become the left child or the right child.
 	else if (newNode->siteX < currParent->siteX) {
 		currParent->leftChild = newNode;
+		newNode->direction = nodeDirection::left;
 	}
 	else {
 		currParent->rightChild = newNode;
+		newNode->direction = nodeDirection::right;
 	}
 
 	// If the new node has no grandparent, it is impossible for the RB-Tree properties to be violated already, so the function call can be ended here again.
@@ -149,43 +155,26 @@ void RBTree::RBTreeInsert(float siteX_, float siteY_) {
 	fixInsertion(newNode);
 }
 
-// Two sets of symmetric cases that need fixing after a new red node is inserted, creating a connection between two red nodes.
-// Case 1:
-//		- The tree is empty (potential parent is nullptr)
-// Solution 1:
-//		- Just make the new node the root node and paint it black.
-//		- This is already in the RBTreeInsert function.
-
-// Case 2:
-//		- The uncle of the new node is red
-// Solution 2:
-//		- Flip the colours of the parent, the uncle and the grandparent.
-//		- Then check whether the double red condition is violated for the grandparent (and check again for case 1-4)
-
-// Case 3:
-//		- The uncle of the new node is black
-//		- The new node is on the opposite side of where the parent is compared to the grandparent (i.e. parent's parent)
-//			- That is, the new node is left (right) and the parent of the new node is right (left).
-// Solution 3:
-//		- Rotate the parent of the new node.
-
-// Case 4:
-//		- The uncle of the new node is black
-//		- The new node is on the same side as the parent is compared to the grandparent.
-//			- That is, the new node is left (right) and the parent of the new node is also left (right).
-//		- Flip the colours of the parent and the grandparent.
-//		- Then check whether the double red condition is violated for the grandparent.
-
-
-
-
 // TODO
-
-void RBTree::fixInsertion(RBNode* node) {
-
+void RBTree::deleteNode(RBNode* node) {
+	// With the node deleted, the number of nodes decreases.
+	this->nodeCount--;
 }
 
-RBNode* RBTree::rotateLeft(RBNode* node) {
+void RBTree::updateDirection(RBNode* node) {
+	if (node->parent == nullptr) {
+		node->direction = nodeDirection::rootDir;
+		return;
+	}
+	if (node == node->parent->leftChild) {
+		node->direction = nodeDirection::left;
+	}
+	else if (node == node->parent->rightChild) {
+		node->direction = nodeDirection::right;
+	}
+}
+
+void RBTree::rotateLeft(RBNode* node) {
 	// What used to be the node's right child will now become the top of the subtree
 	RBNode* newTopNode = node->rightChild;
 	// Meanwhile, what used to be this former right child's left child will now become directly connected to the node being rotated.
@@ -194,8 +183,10 @@ RBNode* RBTree::rotateLeft(RBNode* node) {
 	if (newTopNode->leftChild != nullptr) {
 		newTopNode->leftChild->parent = node;
 	}
-	// Since the new top node is moving up, it needs its parent updated.
+	// Since the new top node is moving up, it needs its parent updated, as well as its direction.
 	newTopNode->parent = node->parent;
+	updateDirection(newTopNode);
+
 	// If this new parent doesn't actually exist (nullptr), then we must be at the root of the whole tree
 	if (node->parent == nullptr) {
 		this->root = newTopNode;
@@ -211,16 +202,19 @@ RBNode* RBTree::rotateLeft(RBNode* node) {
 	newTopNode->leftChild = node;
 	// Symmetrically, the former top node has become the new top node's child instead.
 	node->parent = newTopNode;
+	// Its direction may have changed, so best to update it.
+	updateDirection(newTopNode->leftChild);
 }
 
 // Almost identical to rotateLeft, but with the directions flipped where appropriate.
-RBNode* RBTree::rotateRight(RBNode* node) {
+void RBTree::rotateRight(RBNode* node) {
 	RBNode* newTopNode = node->leftChild;
 	node->leftChild = newTopNode->rightChild;
 	if (newTopNode->rightChild != nullptr) {
 		newTopNode->rightChild->parent = node;
 	}
 	newTopNode->parent = node->parent;
+	updateDirection(newTopNode);
 	if (node->parent == nullptr) {
 		this->root = newTopNode;
 	}
@@ -232,4 +226,160 @@ RBNode* RBTree::rotateRight(RBNode* node) {
 	}
 	newTopNode->rightChild = node;
 	node->parent = newTopNode;
+	updateDirection(newTopNode->rightChild);
+}
+
+
+
+// Two sets of symmetric cases that need fixing after a new red node is inserted, creating a connection between two red nodes.
+// Case 1:
+//		- The tree is empty (potential parent is nullptr)
+// Solution 1:
+//		- Just make the new node the root node and paint it black.
+//		- return;
+
+// Case 2:
+//		- The uncle of the new node is red
+// Solution 2:
+//		- Flip the colours of the parent, the uncle and the grandparent.
+//		- Then check whether the double red condition is violated for the grandparent 
+//		- fixInsertion(grandparent)
+
+// Case 3:
+//		- The uncle of the new node is black
+//		- The new node is on the opposite side of where the parent is compared to the grandparent (i.e. parent's parent)
+//			- That is, the new node is the left (right) child and the parent of the new node is the right (left) child of its parent.
+// Solution 3:
+//		- Rotate the parent of the new node.
+//		- The tree will now be in case 4.
+//		- fixInsertion(parent)
+
+// Case 4:
+//		- The uncle of the new node is black
+//		- The new node is on the same side as the parent is compared to the grandparent.
+//			- That is, the new node is left (right) and the parent of the new node is also left (right).
+// Solution 4:
+//		- Rotate grandparent
+//		- Flip the colours of the parent and the grandparent.
+//		- Then check whether the double red condition is violated for the grandparent.
+//		- fixInsertion(grandparent)
+
+
+void RBTree::fixInsertion(RBNode* node) {
+
+	// Check if parent exists. Only if the parent exists do we check for the colour, so that there's no memory violation (trying to access an attribute of a nullptr)
+	RBNode* parent = node->parent;
+	if (parent != nullptr) {
+		if (parent->color == nodeColor::red) {
+			// Check if uncle exists and set uncle properties. If uncle is nullptr, it's black by default. Useful for case 2-4
+			RBNode* uncle = getUncle(node);
+			nodeColor uncleColor;
+
+			if (uncle == nullptr) {
+				uncleColor = nodeColor::black;
+			}
+			else {
+				uncleColor = uncle->color;
+			}
+
+			// Grandpa also often shows up, so may as well fix him so that he doesn't have to be looked up.
+			RBNode* grandpa = node->parent->parent;
+
+			// Case 1:
+			if (this->root == nullptr) {
+				node->color = nodeColor::black;
+				this->root = node;
+			}
+			// Case 2:
+			else if (uncleColor == nodeColor::red) {
+				// Flip grandpa's colour
+				grandpa->color = (grandpa->color == nodeColor::red) ? nodeColor::black : nodeColor::red;
+				// Flip the parent's colour. This must've been red before, as there wouldn't have been a violation otherwise.
+				node->parent->color = nodeColor::black;
+				// Flip the uncle's colour. Since he must be red in case 2, he gets flipped to black.
+				uncle->color = nodeColor::black;
+				std::cout << "Direction of parent << " << parent->siteX << " >> is " << (parent->direction == nodeDirection::left ? "left" : "right") << std::endl;
+				std::cout << "Flipped an uncle << " << (parent->direction == nodeDirection::left ? parent->parent->rightChild->siteX : parent->parent->leftChild->siteX ) << " >> from red to black" << std::endl;
+				// Grandpa's flip might introduce a new problems, so it's time to re-run fixInsertion on grandpa.
+				fixInsertion(grandpa);
+			}
+			// Case 3 and 4:
+			else {
+				// Case 3:
+				if (node->direction != parent->direction) {
+					// If the node is the left child, we want to rotate the tree right. If it is the right child, we want to rotate it left. In both cases, the node ends up swapping parent/child roles with the current parent.
+					if (node->direction == nodeDirection::right) {
+						rotateLeft(parent);
+					}
+					else {
+						rotateRight(parent);
+					}
+					// This rotation puts the tree in case 4, as now the former parent is the bottom of the two nodes violating the RB properties, but the child direction for both red nodes is the same.
+					fixInsertion(parent);
+				}
+				// Case 4:
+				else {
+					if (node->direction == nodeDirection::left) {
+						rotateRight(grandpa);
+					}
+					else {
+						rotateLeft(grandpa);
+					}
+					parent->color = (parent->color == nodeColor::red) ? nodeColor::black : nodeColor::red;
+					grandpa->color = (grandpa->color == nodeColor::red) ? nodeColor::black : nodeColor::red;
+				}
+			}
+		}
+	}
+
+	this->root->color = nodeColor::black;
+}
+
+// Helpful function to see what the tree looks like
+#include <fstream>
+#include <queue>
+#include <string>
+
+// Generates a .dot file containing the whole tree (maintaining the stored colour).
+void RBTree::printTree() {
+	std::ofstream dotFile("RBTree.dot", std::ofstream::out);
+	//dotFile.open("RBTree.dot");
+	dotFile << "digraph{" << std::endl;
+
+	int nodeNum = 0;
+	RBNode* currNode;
+
+	std::queue<RBNode*> newQ;
+	newQ.push(this->root);
+	while (newQ.empty() == false) {
+		currNode = newQ.front();
+		newQ.pop();
+
+		std::string nodeNumStr = std::to_string(static_cast<int>(currNode->siteX));
+		if (currNode->leftChild != nullptr) {
+			std::string newConnect = nodeNumStr + "->" + std::to_string(static_cast<int>(currNode->leftChild->siteX)) + "\n";
+			dotFile << newConnect;
+			newQ.push(currNode->leftChild);
+			std::cout << "Left child found. Adding: " << newConnect << std::endl;
+		}
+		if (currNode->rightChild != nullptr) {
+			std::string newConnect = nodeNumStr + "->" + std::to_string(static_cast<int>(currNode->rightChild->siteX)) + "\n";
+			dotFile << newConnect;
+			newQ.push(currNode->rightChild);
+			std::cout << "Right child found. Adding: " << newConnect << std::endl;
+		}
+
+
+		std::string pushColor;
+		if (currNode->color == nodeColor::red) {
+			pushColor = std::to_string(static_cast<int>(currNode->siteX)) + "[color = red]\n";
+		}
+		else {
+			pushColor = std::to_string(static_cast<int>(currNode->siteX)) + "[color = black]\n";
+		}
+		dotFile << pushColor;
+	}
+	dotFile << "}";
+	
+	dotFile.close();
 }

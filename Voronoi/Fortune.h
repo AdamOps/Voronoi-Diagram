@@ -1,8 +1,10 @@
 #pragma once
+#include "RedBlackTree.h"
+#include "VoronoiEvents.h"
 
-void executeCircleEvent();
+void executeCircleEvent(RBTree& beachfront, voronoiEvent currEvent);
 
-void executeSiteEvent();
+void executeSiteEvent(RBTree& beachfront, voronoiEvent currEvent);
 
 void addCircleEvent();
 

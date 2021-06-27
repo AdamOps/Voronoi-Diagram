@@ -7,22 +7,25 @@
 class voronoiEvent {
 public:
 
-	voronoiEvent(site* newEvent) {
-		y = newEvent->getY();
-		circleEvent = newEvent->isCircle();
+	voronoiEvent(site& newEvent) {
+		x = newEvent.getX();
+		y = newEvent.getY();
+		circleEvent = newEvent.isCircle();
 	}
 
-	voronoiEvent(circle* newEvent) {
-		y = newEvent->getY();
-		circleEvent = newEvent->isCircle();
+	voronoiEvent(circle& newEvent) {
+		x = newEvent.getX();
+		y = newEvent.getY();
+		circleEvent = newEvent.isCircle();
 	}
 
 	float getY() { return this->y; }
+	float getX() { return this->x; }
 	bool isCircle() { return this->circleEvent; }
 	void printEvent() { std::cout << "y = " << this->y << std::endl; }
 
-private:	
-	float y;
+private:
+	float x, y;
 	bool circleEvent;
 };
 
