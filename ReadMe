@@ -1,4 +1,5 @@
-Work in progress for code generating Voronoi Diagrams using Fortune's Algorithm
+# Voronoi-Diagram
+Code generating Voronoi Diagrams using Fortune's Algorithm
 
 Main features:
   - Red-Black binary search tree for storing the beachfront
